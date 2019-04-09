@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="~{fragments/head}"></th:block>
+</head>
+<body>
+<div class="container-fluid">
+    <header>
+        <th:block th:include="~{fragments/navbar}"></th:block>
+    </header>
+    <main>
+        <div class="jumbotron">
+            <div class="row d-flex justify-content-around mt-4">
+                <table class="table mt-3">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">E-mail</th>
+                        <th scope="col">Authority</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block th:each="user : ${users}">
+                        <tr>
+                            <th scope="row" th:text="${userStat.count}"></th>
+                            <td th:text="${user.username}"></td>
+                            <td th:text="${user.email}"></td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle"
+                                            type="button" id="dropdownMenuButton"
+                                            data-toggle="dropdown"
+                                            aria-haspopup="true"
+                                            aria-expanded="false"
+                                            th:text="${user.authority}"
+                                            th:disabled="${#strings.equals(user.username, #authentication.getPrincipal().getUsername()) ||
+                                            #strings.equals(user.authority, 'ROOT')}"></button>
+
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <th:block th:if="${#strings.equals(user.authority, 'USER')}">
+                                            <form th:action="@{/admin/showUsers/set-moderator/{id}(id=${user.id})}" method="post">
+                                                <input type="hidden" name="_csrf"
+                                                       value="80417983-fe8b-45c7-963e-31f6915a1560">
+                                                <button class="dropdown-item" type="submit">MODERATOR</button>
+                                            </form>
+                                            <form th:action="@{/admin/showUsers/set-admin/{id}(id=${user.id})}" method="post">
+                                                <input type="hidden" name="_csrf"
+                                                       value="80417983-fe8b-45c7-963e-31f6915a1560">
+                                                <button class="dropdown-item" type="submit">ADMIN</button>
+                                            </form>
+                                        </th:block>
+                                        <th:block th:if="${#strings.equals(user.authority, 'MODERATOR')}">
+                                            <form th:action="@{/admin/showUsers/set-user/{id}(id=${user.id})}" method="post">
+                                                <input type="hidden" name="_csrf"
+                                                       value="80417983-fe8b-45c7-963e-31f6915a1560">
+                                                <button class="dropdown-item" type="submit">USER</button>
+                                            </form>
+                                            <form th:action="@{/admin/showUsers/set-admin/{id}(id=${user.id})}" method="post">
+                                                <input type="hidden" name="_csrf"
+                                                       value="80417983-fe8b-45c7-963e-31f6915a1560">
+                                                <button class="dropdown-item" type="submit">ADMIN</button>
+                                            </form>
+                                        </th:block>
+                                        <th:block th:if="${#strings.equals(user.authority, 'ADMIN')}">
+                                            <form th:action="@{/admin/showUsers/set-user/{id}(id=${user.id})}" method="post">
+                                                <input type="hidden" name="_csrf"
+                                                       value="80417983-fe8b-45c7-963e-31f6915a1560">
+                                                <button class="dropdown-item" type="submit">USER</button>
+                                            </form>
+                                            <form th:action="@{/admin/showUsers/set-moderator/{id}(id=${user.id})}" method="post">
+                                                <input type="hidden" name="_csrf"
+                                                       value="80417983-fe8b-45c7-963e-31f6915a1560">
+                                                <button class="dropdown-item" type="submit">MODERATOR</button>
+                                            </form>
+                                        </th:block>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                        </tr>
+                    </th:block>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

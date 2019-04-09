@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="~{fragments/head}"></th:block>
+</head>
+<body>
+<div class="container-fluid">
+    <header>
+        <th:block th:include="~{fragments/navbar}"></th:block>
+    </header>
+    <main>
+        <div class="container my-3">
+
+            <div class="container-fluid">
+                <h1 class="text-left">Your Choice</h1>
+
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="inputVirusesRadio" name="customRadioInline1" class="custom-control-input">
+                    <label class="custom-control-label" for="inputVirusesRadio">Viruses</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="inputCapitalsRadio" name="customRadioInline1" class="custom-control-input">
+                    <label class="custom-control-label" for="inputCapitalsRadio">Capitals</label>
+                </div>
+
+                <div class="data-container mt-5">
+                    <h1>Select, what data you want to visualize!</h1>
+                </div>
+
+                <script>
+                    // jQuery Event handlers
+                    $('#inputVirusesRadio').click(() => {
+                        fetch('http://localhost:8000/viruses/showViruses') // Fetch the data (GET request)
+                            .then((response) => response.json()) // Extract the JSON from the Response
+                            .then((json) => json.forEach((x, y) => { // Render the JSON data to the HTML
+                                if (y % 4 === 0) {
+                                    $('.text-left').empty().append('All viruses');
+                                    $('.data-container').empty().append('<div class="row d-flex justify-content-around mt-4">' +
+                                        '<table class="table mt-3">' +
+                                        '<thead class="thead-dark">' +
+                                        '<tr>' +
+                                        '<th scope="col">#</th>' +
+                                        '<th scope="col">Name</th>' +
+                                        '<th scope="col">Magnitude</th>' +
+                                        '<th scope="col">Released On</th>' +
+                                        '<th scope="col">Edit</th>' +
+                                        '<th scope="col">Delete</th>' +
+                                        '</tr>' +
+                                        '</thead>' +
+                                        '<tbody>' +
+                                        '</tbody>' +
+                                        '</table>');
+                                }
+
+                                let divColumn =
+                                    '<tr>' +
+                                    '<th scope="row"></th>' +
+                                    '<td>' + x.name + '</td>' +
+                                    '<td>' + x.magnitude + '</td>' +
+                                    '<td>' + x.releasedOn + '</td>' +
+                                    '<td><a class="btn re-background" href="/viruses/edit/' + x.id + '">Edit</a></td>' +
+                                    '<td><a class="btn re-background" href="/viruses/delete/' + x.id + '">Delete</a></td>' +
+                                    '</tr>';
+
+                                $('tbody').append(divColumn);
+
+                            }));
+                    });
+                    // Fetch and render the data
+                    $('#inputCapitalsRadio').click(() => {
+                        fetch('http://localhost:8000/viruses/showCapitals') // Fetch the data (GET request)
+                            .then((response) => response.json()) // Extract the JSON from the Response
+                            .then((json) => {
+                                $('.text-left').empty().append('All capitals');
+                                $('.data-container').empty().append('<div class="row d-flex justify-content-around mt-4">' +
+                                    '<table class="table mt-3">' +
+                                    '<thead class="thead-dark">' +
+                                    '<tr>' +
+                                    '<th scope="col">#</th>' +
+                                    '<th scope="col">Name</th>' +
+                                    '<th scope="col">Latitude</th>' +
+                                    '<th scope="col">Longitude</th>' +
+                                    '</tr>' +
+                                    '</thead>' +
+                                    '<tbody>' +
+                                    '</tbody>' +
+                                    '</table>');
+
+                                for (let i = 0; i < json.length; i++) {
+                                $('tbody').append('<tr>' +
+                                    '<th scope="row">' + i + '</th>' +
+                                    '<td>' + json[i].name + '</td>' +
+                                    '<td>' + json[i].latitude + '</td>' +
+                                    '<td>' + json[i].longitude + '</td>' +
+                                    '</tr>');
+                            }
+                            });
+                    });
+                </script>
+            </div>
+    </main>
+</div>
+</body>
+</html>
